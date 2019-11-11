@@ -1,0 +1,37 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+   name: tomcat-demo
+   namespace: default
+spec:
+   replicas: 1
+   selector: 
+      matchLabels:
+         app: tomcat-demo
+   template:
+      metadata:
+         labels:
+            app: tomcat-demo
+      spec:
+         containers:
+         - name: tomcat-demo
+           image: 10.0.38.95/tomcat/tomcat-demo:v1 
+           imagePullPolicy: IfNotPresent
+           ports:
+           - name: web
+             containerPort: 8080
+         imagePullSecrets:
+         - name: wanglei-harbor
+---
+apiVersion: v1
+kind: Service
+metadata:
+   name: tomcat-demo
+spec:
+   selector:
+      app: tomcat-demo
+   type: NodePort
+   ports:
+   - name: web
+     port: 8080
+     targetPort: 8080
